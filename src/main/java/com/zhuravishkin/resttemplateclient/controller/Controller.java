@@ -15,19 +15,24 @@ import org.springframework.web.client.RestTemplate;
 @RestController
 @RequestMapping(value = "client")
 public class Controller {
+    private final RestTemplate restTemplate;
+
+    public Controller(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
+
     @GetMapping(value = "/get")
     public ResponseEntity<User> get() {
         try {
             throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "no body");
         } catch (HttpClientErrorException e) {
-            log.error(String.valueOf(e.getRawStatusCode()));
-            log.error(e.getLocalizedMessage());
-            log.error(e.getStatusCode().toString());
-            log.error(e.getStatusText());
-            log.error(e.getStatusCode().getReasonPhrase());
-            log.error(e.getMessage());
+            log.warn(String.valueOf(e.getRawStatusCode()));
+            log.warn(e.getLocalizedMessage());
+            log.warn(e.getStatusCode().toString());
+            log.warn(e.getStatusText());
+            log.warn(e.getStatusCode().getReasonPhrase());
+            log.warn(e.getMessage());
         }
-        RestTemplate restTemplate = new RestTemplate();
         String url = "http://localhost:8080/template";
         User getUser = restTemplate.getForEntity(url + "/get", User.class).getBody();
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
