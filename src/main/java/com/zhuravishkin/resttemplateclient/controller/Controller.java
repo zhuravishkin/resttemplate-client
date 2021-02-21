@@ -42,6 +42,8 @@ public class Controller {
         map.add("name", getUser.getName() + " Winchester");
         int age = getUser.getAge();
         map.add("age", String.valueOf(++age));
-        return restTemplate.postForEntity(url + "/post", httpEntity, User.class);
+        ResponseEntity<User> userResponseEntity = restTemplate.postForEntity(url + "/post", httpEntity, User.class);
+        log.info(userResponseEntity.getBody().toString());
+        return userResponseEntity;
     }
 }
