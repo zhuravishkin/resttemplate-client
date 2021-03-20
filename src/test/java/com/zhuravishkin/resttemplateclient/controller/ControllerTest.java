@@ -1,5 +1,6 @@
 package com.zhuravishkin.resttemplateclient.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zhuravishkin.resttemplateclient.model.User;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
@@ -11,8 +12,6 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.*;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -33,24 +32,23 @@ class ControllerTest {
     @MockBean
     private RestTemplate restTemplate;
 
+    @SpyBean
+    private ObjectMapper objectMapper;
+
     @SneakyThrows
     @Test
     void get_ok() {
         User user = new User("Sam", 30);
         ResponseEntity<User> responseEntity = new ResponseEntity<>(user, HttpStatus.OK);
 
-        when(restTemplate.getForEntity("http://localhost:8080/template/get", User.class))
+        when(restTemplate.getForEntity("http://localhost:8080/server/get", User.class))
                 .thenReturn(responseEntity);
 
-        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<>(map, httpHeaders);
-        map.add("name", user.getName() + " Winchester");
-        int age = user.getAge();
-        map.add("age", String.valueOf(++age));
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> httpEntity = new HttpEntity<>(objectMapper.writeValueAsString(responseEntity.getBody()), httpHeaders);
 
-        when(restTemplate.postForEntity("http://localhost:8080/template/post", httpEntity, User.class))
+        when(restTemplate.postForEntity("http://localhost:8080/server/post?surname=Winchester", httpEntity, User.class))
                 .thenReturn(responseEntity);
 
         UriComponents uriComponents = UriComponentsBuilder.newInstance()

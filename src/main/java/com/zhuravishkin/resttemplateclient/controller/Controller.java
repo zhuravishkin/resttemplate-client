@@ -56,9 +56,13 @@ public class Controller {
                 .build()
                 .encode();
 
-        ResponseEntity<User> userResponseEntity = restTemplate.postForEntity(uriComponents.toString(), httpEntity, User.class);
+        ResponseEntity<User> userResponseEntity = restTemplate.postForEntity(
+                uriComponents.toString(),
+                httpEntity,
+                User.class);
 
         log.warn(userResponseEntity.getBody().toString());
+
         return userResponseEntity;
     }
 }
