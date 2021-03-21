@@ -6,9 +6,9 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 public class WebfluxWebClient {
-    private final WebClient CLIENT = WebClient.create("http://localhost:8080");
+    private final WebClient client = WebClient.create("http://localhost:8080");
 
-    private Mono<ClientResponse> result = CLIENT.get()
+    private Mono<ClientResponse> result = client.get()
             .uri("/webflux")
             .accept(MediaType.APPLICATION_JSON)
             .exchange();
